@@ -3,11 +3,11 @@ import ContactForm from "./Components/ContactForm";
 import ContactsList from "./Components/ContactsList";
 import ContactsFilter from "./Components/ContactsFilter";
 import Notification from "./Components/Notification";
-import { useSelector } from "react-redux";
-import { getContacts } from "redux/contactsList/slice";
+import Loader from "Components/Loader";
+import { useFetchContactsQuery } from './redux/contactsList/slice';
 
 function App() {
-  const contacts = useSelector(getContacts);
+  const { data, isFetching, isError} = useFetchContactsQuery();
 
   return (
       <>
@@ -16,12 +16,12 @@ function App() {
         </Section>
 
         <Section title="Contacts"> 
-          {
-            contacts.length === 0 ? 
-            <Notification message="Contacts book is empty!" /> :
+          {isFetching && <Loader/>}
+          {(!data || isError) && <Notification message="Contacts book is empty!" />}
+          {data && !isError &&
             <>
               <ContactsFilter/>
-              <ContactsList/> 
+              <ContactsList contacts={data}/> 
             </> 
           }
         </Section>

@@ -1,21 +1,21 @@
 import PropTypes from "prop-types";
-import { useDispatch } from "react-redux";
-import { removeContact } from "redux/contactsList/slice";
+import { useDeleteContactMutation } from "redux/contactsList/slice";
 import s from "./ListItem.module.css";
 
 function ListItem({ name, number, id }) {
-    const dispatch = useDispatch();
+    const [deleteContact, { isLoading: isDeleting }] = useDeleteContactMutation();
     
     return (
         <li className={s.item} >
             <p>{name}</p>
             <a className={s.link} href={`tel:+${number.split('-').join('')}`}>{number}</a>
             <button
+                disabled={isDeleting} 
                 className={s.button}
                 type="button"
-                onClick={() => dispatch(removeContact(id))}
+                onClick={() => deleteContact(id)}
             >
-                Delete
+                {isDeleting ? 'Deleting...' : 'Delete'}
             </button>
         </li >
     )
